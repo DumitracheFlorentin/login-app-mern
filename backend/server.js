@@ -2,9 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
 import users from "./routes/userRoutes.js";
+import connectDatabase from "./config/dbConnection.js";
 
 // Config env file
 dotenv.config();
+
+// Init DB Connection
+connectDatabase();
 
 // Init server
 const app = express();

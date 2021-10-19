@@ -1,117 +1,75 @@
-import users from "../config/db.js";
+import asyncHandler from "express-async-handler";
+import User from "../models/usersModel.js";
 
-// Desc:   GET ALL USERS
-// Type:   Public
-const getUsers = (req, res) => {
-  try {
-    res.status(200).json(users);
-  } catch (error) {
-    res.json({ message: error.message });
-  }
-};
+// @Desc    GET ALL USERS
+// @Route   /api/users
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+
+  res.json(users);
+});
 
 // Desc:   GET SPECIFIC USER
-// Type:   Public
-const getSpecificUser = (req, res) => {
-  try {
-    const id = req.params.id;
+// @Route   /api/users/:id
+const getSpecificUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
 
-    if (users.some((user) => user._id === parseInt(id))) {
-      res.status(200).json(users.filter((user) => user._id === parseInt(id)));
-    } else {
-      res
-        .status(404)
-        .json({ message: `The user with id: ${id} was not found!` });
-    }
-  } catch (error) {
-    res.json({ message: error.message });
-  }
-};
+  res.json(user);
+});
 
 // Desc:   UPDATE SPECIFIC USER
-// Type:   Private
-const updateUser = (req, res) => {
-  try {
-    const id = req.params.id;
+// @Route   /api/users/:id
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
 
-    if (users.some((user) => user._id === parseInt(id))) {
-      const info = req.body;
-
-      users.forEach((user) => {
-        if (user._id === parseInt(id)) {
-          user.username = info.username ? info.username : user.username;
-          user.password = info.password ? info.password : user.password;
-          user.email = info.email ? info.email : user.email;
-        }
-      });
-
-      res.status(200).json({ message: `The user with id: ${id} was updated!` });
-    } else {
-      res
-        .status(404)
-        .json({ message: `The user with id: ${id} was not found!` });
-    }
-  } catch (error) {
-    res.json({ message: error.message });
-  }
-};
-
-// Desc:   DELETE SPECIFIC USER
-// Type:   Private
-const deleteUser = (req, res) => {
-  try {
-    const id = req.params.id;
-
-    if (users.some((user) => user._id === parseInt(id))) {
-      let indeX;
-      users.forEach((user, index) => {
-        if (user._id === parseInt(id)) {
-          indeX = index;
-        }
-      });
-
-      users.splice(indeX, 1);
-
-      res.status(200).json({ message: `The user with id: ${id} was deleted!` });
-    } else {
-      res
-        .status(404)
-        .json({ message: `The user with id: ${id} was not found!` });
-    }
-  } catch (error) {
-    res.json({ message: error.message });
-  }
-};
-
-// Desc:   ADD NEW USER
-// Type:   Public
-const addUser = (req, res) => {
-  try {
-    const lastUser = users[users.length - 1];
-
+  if (user) {
     const { username, password, email } = req.body;
 
-    if (username && password && email) {
-      if (!users.some((user) => user.email === email)) {
-        let newUser = {
-          _id: lastUser._id + 1,
-          username,
-          password,
-          email,
-        };
+    user.username = username ? username : user.username;
+    user.password = password ? password : user.password;
+    user.email = email ? email : user.email;
 
-        users.push(newUser);
-      } else {
-        res.json({ message: "The email is already taken!" });
-      }
-    } else {
-      res.json({ message: "You must complete all fields!" });
-    }
+    const updatedUser = await user.save();
 
-    res.status(200).json({ message: `The user was added!` });
-  } catch (error) {
-    res.json({ message: error.message });
+    res.json(updatedUser);
+  } else {
+    res.json({ message: "The user does not exist!" });
   }
-};
+});
+
+// Desc:   DELETE SPECIFIC USER
+// @Route   /api/users/:id
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+    res.json({ message: "The user was removed!" });
+  } else {
+    res.json({ message: "The user does not exist!" });
+  }
+});
+
+// Desc:   ADD NEW USER
+// @Route   /api/users
+const addUser = asyncHandler(async (req, res) => {
+  const { username, password, email } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (!userExists) {
+    if (username && password && email) {
+      const newUser = await User.create({
+        username,
+        password,
+        email,
+      });
+
+      res.json(newUser);
+    }
+  } else {
+    res.json({ message: "The email is already taken!" });
+  }
+});
 
 export { getUsers, getSpecificUser, updateUser, deleteUser, addUser };
