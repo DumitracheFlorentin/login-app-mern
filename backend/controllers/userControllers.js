@@ -9,7 +9,7 @@ const getUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
-// Desc:   GET SPECIFIC USER
+// @Desc    GET SPECIFIC USER
 // @Route   /api/users/:id
 const getSpecificUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -17,7 +17,7 @@ const getSpecificUser = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
-// Desc:   UPDATE SPECIFIC USER
+// @Desc    UPDATE SPECIFIC USER
 // @Route   /api/users/:id
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -37,7 +37,7 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Desc:   DELETE SPECIFIC USER
+// @Desc    DELETE SPECIFIC USER
 // @Route   /api/users/:id
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -50,7 +50,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Desc:   ADD NEW USER
+// @Desc    ADD NEW USER
 // @Route   /api/users
 const addUser = asyncHandler(async (req, res) => {
   const { username, password, email } = req.body;
