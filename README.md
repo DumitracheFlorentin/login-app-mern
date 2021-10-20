@@ -12,7 +12,7 @@ The project was finished using a MERN Stack, React JS as the frontend library, R
 - If someone is logged in to the app and he is trying to acces the login page he will be pushed back to the main page
 
 ```
-NOTE: All features related to data storage are made with redux
+NOTE: All features related to state management are made with redux
 ```
 
 ## Usage
