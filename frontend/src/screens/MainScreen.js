@@ -3,10 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navbar, Nav, Container, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { allUsers, logoutUser } from "../actions/userActions";
-import { useHistory } from "react-router-dom";
 
 export default function MainScreen() {
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const { loading, error, users } = useSelector((state) => state.users);

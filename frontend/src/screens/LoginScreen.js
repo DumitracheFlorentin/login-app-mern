@@ -13,7 +13,7 @@ export default function LoginScreen() {
   const passwordRef = useRef();
 
   const userLogged = useSelector((state) => state.isLogged);
-  const { isLogged, loading } = userLogged;
+  const { isLogged } = userLogged;
 
   const loginHandler = (e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ export default function LoginScreen() {
     if (localStorage.getItem("loginForm-user-login")) {
       history.push("/");
     }
-  }, [dispatch, isLogged]);
+  }, [dispatch, isLogged, history, userLogged]);
 
   return (
     <main className="main">

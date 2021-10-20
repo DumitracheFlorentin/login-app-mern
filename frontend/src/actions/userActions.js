@@ -7,6 +7,9 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGIN_USER_LOGOUT,
+  REGISTER_USER_REQUEST,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_FAIL,
 } from "../constants/userConstants";
 
 export const allUsers = () => async (dispatch) => {
@@ -51,5 +54,26 @@ export const UserIsLogged = (username, password) => async (dispatch) => {
 export const logoutUser = () => async (dispatch) => {
   dispatch({ type: LOGIN_USER_LOGOUT });
   localStorage.removeItem("loginForm-user-login");
-  // document.location.href = "/login";
+};
+
+export const registerUser = (username, password, email) => async (dispatch) => {
+  try {
+    dispatch({ type: REGISTER_USER_REQUEST });
+
+    const { data } = await axios.post("api/users", {
+      username,
+      password,
+      email,
+    });
+
+    dispatch({ type: REGISTER_USER_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: REGISTER_USER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
 };
