@@ -72,4 +72,29 @@ const addUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { getUsers, getSpecificUser, updateUser, deleteUser, addUser };
+// @Desc    LOGIN USER
+// @Route   /api/users/login
+const loginUser = asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
+
+  const userExists = await User.findOne({ username });
+
+  if (userExists) {
+    if (userExists.password === password) {
+      res.json(userExists);
+    } else {
+      res.json({ message: "The password is not correct!" });
+    }
+  } else {
+    res.json({ message: "The username does not exist!" });
+  }
+});
+
+export {
+  getUsers,
+  getSpecificUser,
+  updateUser,
+  deleteUser,
+  addUser,
+  loginUser,
+};
